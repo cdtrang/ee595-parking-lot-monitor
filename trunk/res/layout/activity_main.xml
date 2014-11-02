@@ -12,7 +12,7 @@
     <Button android:id="@+id/btnViewSpaces"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="View All Parking Spaces"
+        android:text="WSU - Parking Lots"
         />
- 
+
 </RelativeLayout>

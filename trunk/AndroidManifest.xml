@@ -26,10 +26,11 @@
             </intent-filter>
         </activity>
                 
-        <!-- View Spaces Activity -->
+        <!-- Child of MAIN -->
         <activity
-            android:name=".ViewSpaces"
-            android:label="View All Parking Spaces" >
+            android:name=".ViewSpaces"            
+            android:label="WSU - Parking Lots" 
+            android:parentActivityName="com.example.parkingmonitor.MainActivity">
         </activity>
     </application>
  

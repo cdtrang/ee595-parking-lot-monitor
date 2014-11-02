@@ -14,15 +14,18 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-
 
 public class ViewSpaces extends ListActivity {
  
@@ -39,75 +42,64 @@ public class ViewSpaces extends ListActivity {
  
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
-    private static final String TAG_PARKING = "parking";
-    private static final String TAG_PID = "pid";
-    private static final String TAG_EMPTY = "empty";
-    private static final String TAG_UPDATED = "updated_at";
- 
-    private int numberOfSpaces = 0;
-    private int numberOfEmptySpaces = 0;
-    	    
+    private static final String TAG_LOT = "lot";
+    private static final String TAG_LOTID = "lotId";
+    private static final String TAG_DESC = "desc";
+    private static final String TAG_TOTAL_SPACE = "totalSpace";
+    private static final String TAG_FREE_SPACE = "freeSpace";
+     	    
     // products JSONArray
-    JSONArray parkings = null;
+    JSONArray lots = null;
  
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.all_spaces);
- 
+        setContentView(R.layout.activity_view_all_lots);
+	    
         // Hashmap for ListView
         spacesList = new ArrayList<HashMap<String, String>>();
  
-        // Loading products in Background Thread
-        new LoadAllProducts().execute();
- 
-        // Get listview
-        ListView lv = getListView();
- 
-        // on seleting single product
-        // launching Edit Product Screen
-/*        lv.setOnItemClickListener(new OnItemClickListener() {
- 
+        // Loading all spaces in background
+        new LoadAllSpaces().execute();
+        
+        // Get ListView
+        ListView listView = getListView();
+        
+        //Show a map when a parking lot is clicked on
+        listView.setOnItemClickListener(new OnItemClickListener() {
+        	 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
                 // getting values from selected ListItem
-                String pid = ((TextView) view.findViewById(R.id.pid)).getText()
+                String lotId = ((TextView) view.findViewById(R.id.lotId)).getText()
                         .toString();
- 
-                // Starting new intent
-                Intent in = new Intent(getApplicationContext(),
-                        EditProductActivity.class);
-                // sending pid to next activity
-                in.putExtra(TAG_PID, pid);
- 
-                // starting new activity and expecting some response back
-                startActivityForResult(in, 100);
+                
+                
+                ImageView newImg = (ImageView) findViewById(R.id.lot_map);
+                
+                if (lotId.equalsIgnoreCase("1")) {
+                	newImg.setImageResource(R.drawable.twentyfirst_bluff);	
+                }
+                if (lotId.equalsIgnoreCase("2")) {
+                	newImg.setImageResource(R.drawable.seventeenth_fairmount);	
+                }
+                if (lotId.equalsIgnoreCase("3")) {
+                	newImg.setImageResource(R.drawable.ablah_library);	
+                }
+                
+                newImg.setVisibility(View.VISIBLE);
+
             }
-        });*/
+        });
  
     }
  
-/*    // Response from Edit Product Activity
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // if result code 100
-        if (resultCode == 100) {
-            // if result code 100 is received
-            // means user edited/deleted product
-            // reload this screen again
-            Intent intent = getIntent();
-            finish();
-            startActivity(intent);
-        }
- 
-    }*/
  
     /**
      * Background Async Task to Load all product by making HTTP Request
      * */
-    class LoadAllProducts extends AsyncTask<String, String, String> {
+    class LoadAllSpaces extends AsyncTask<String, String, String> {
  
         /**
          * Before starting background thread Show Progress Dialog
@@ -123,7 +115,7 @@ public class ViewSpaces extends ListActivity {
         }
  
         /**
-         * getting All products from url
+         * getting all spaces from get_all_spaces.php url
          * */
         protected String doInBackground(String... args) {
             // Building Parameters
@@ -132,7 +124,7 @@ public class ViewSpaces extends ListActivity {
             JSONObject json = jParser.makeHttpRequest(url_all_spaces, "GET", params);
  
             // Check your log cat for JSON response
-            Log.d("All Parkings: ", json.toString());
+            Log.d("All Parking Lots: ", json.toString());
  
             try {
                 // Checking for SUCCESS TAG
@@ -141,47 +133,31 @@ public class ViewSpaces extends ListActivity {
                 if (success == 1) {
                     // products found
                     // Getting Array of Products
-                    parkings = json.getJSONArray(TAG_PARKING);
+                    lots = json.getJSONArray(TAG_LOT);
  
                     // looping through All Products
-                    for (int i = 0; i < parkings.length(); i++) {
-                        JSONObject c = parkings.getJSONObject(i);
+                    for (int i = 0; i < lots.length(); i++) {
+                        JSONObject c = lots.getJSONObject(i);
  
                         // Storing each json item in variable
-                        String id = c.getString(TAG_PID);
+                        String id = c.getString(TAG_LOTID);
+                        String desc = c.getString(TAG_DESC);
+                        String totalSpace = c.getString(TAG_TOTAL_SPACE);
+                        String freeSpace = c.getString(TAG_FREE_SPACE);
                         
-                        String empty = c.getString(TAG_EMPTY);
-                        
-                        if (empty.equalsIgnoreCase("0")) {
-                        	empty = "Filled"; 
-                        }
-                        else {
-                        	empty = "Empty";
-                        	numberOfEmptySpaces++;
-                        }
-                        
-                        //String updated = c.getString(TAG_UPDATED);
- 
                         // creating new HashMap
                         HashMap<String, String> map = new HashMap<String, String>();
  
                         // adding each child node to HashMap key => value
-                        map.put(TAG_PID, id);
-                        map.put(TAG_EMPTY, empty);
+                        map.put(TAG_LOTID, id);
+                        map.put(TAG_DESC, desc);
+                        map.put(TAG_TOTAL_SPACE, totalSpace);
+                        map.put(TAG_FREE_SPACE, freeSpace);
  
                         // adding HashList to ArrayList
                         spacesList.add(map);
-                        numberOfSpaces++;
                     }
-                } else {
-/*                    // no products found
-                    // Launch Add New product Activity
-                    Intent i = new Intent(getApplicationContext(),
-                            NewProductActivity.class);
-                    // Closing all previous activities
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(i);*/
-                }
+                } 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -202,18 +178,30 @@ public class ViewSpaces extends ListActivity {
                      * Updating parsed JSON data into ListView
                      * */
                     ListAdapter adapter = new SimpleAdapter(
-                            ViewSpaces.this, spacesList,
-                            R.layout.list_item, new String[] {TAG_PID, TAG_EMPTY},
-                            new int[] { R.id.pid, R.id.empty });
+                            ViewSpaces.this,
+                            spacesList,
+                            R.layout.list_item, 
+                            new String[] {TAG_LOTID, TAG_DESC, TAG_TOTAL_SPACE, TAG_FREE_SPACE},
+                            new int[] { R.id.lotId, R.id.desc, R.id.total, R.id.free });
                     // updating listview
                     setListAdapter(adapter);
-                    TextView view = (TextView) findViewById(R.id.parking_status);
-                    view.setText("Available parking spaces: " + numberOfEmptySpaces + "/" + numberOfSpaces);
+                    
                     
                 }
             });
  
         }
  
+    	
+    	public boolean onCreateOptionsMenu(Menu menu) {
+    		// Inflate the menu; this adds items to the action bar if it is present.
+    		/*getMenuInflater().inflate(R.menu.main, menu);
+    		return true;*/
+    		
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.activity_view_lots, menu);
+     
+            return true;
+    	}
     }
 }
