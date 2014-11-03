@@ -8,28 +8,26 @@ import org.apache.http.NameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
- 
-import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
+import android.view.View;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
+import android.app.Activity;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.ExpandableListView.OnGroupClickListener;
+import android.widget.ExpandableListView.OnGroupCollapseListener;
+import android.widget.ExpandableListView.OnGroupExpandListener;
+import android.widget.Toast;
 
-public class ViewSpaces extends ListActivity {
- 
-    // Progress Dialog
+import android.widget.ImageView;
+
+public class ViewSpaces extends Activity { 
+
+	// Progress Dialog
     private ProgressDialog pDialog;
  
     // Creating JSON Parser object
@@ -51,48 +49,53 @@ public class ViewSpaces extends ListActivity {
     // products JSONArray
     JSONArray lots = null;
  
+    // Expandable List View
+    ExpandableListAdapter listAdapter;
+    ExpandableListView expListView;
+    List<String> listDataHeader;
+    HashMap<String, List<String>> listDataChild;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_all_lots);
 	    
         // Hashmap for ListView
-        spacesList = new ArrayList<HashMap<String, String>>();
+        //spacesList = new ArrayList<HashMap<String, String>>();
  
-        // Loading all spaces in background
-        new LoadAllSpaces().execute();
+        expListView = (ExpandableListView) findViewById(R.id.lvExp);
+        // Loading all parking lots in background
+        new LoadAllSpaces().execute();        
         
-        // Get ListView
-        ListView listView = getListView();
-        
-        //Show a map when a parking lot is clicked on
-        listView.setOnItemClickListener(new OnItemClickListener() {
-        	 
+/*        // Listview Group click listener
+        expListView.setOnGroupClickListener(new OnGroupClickListener() {
+ 
             @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                    int position, long id) {
-                // getting values from selected ListItem
-                String lotId = ((TextView) view.findViewById(R.id.lotId)).getText()
-                        .toString();
-                
-                
-                ImageView newImg = (ImageView) findViewById(R.id.lot_map);
-                
-                if (lotId.equalsIgnoreCase("1")) {
-                	newImg.setImageResource(R.drawable.twentyfirst_bluff);	
-                }
-                if (lotId.equalsIgnoreCase("2")) {
-                	newImg.setImageResource(R.drawable.seventeenth_fairmount);	
-                }
-                if (lotId.equalsIgnoreCase("3")) {
-                	newImg.setImageResource(R.drawable.ablah_library);	
-                }
-                
-                newImg.setVisibility(View.VISIBLE);
-
+            public boolean onGroupClick(ExpandableListView parent, View v,
+                int groupPosition, long id) {
+            	ImageView showImg = (ImageView) findViewById(R.id.lblListHeader);
+            	showImg.setVisibility(View.VISIBLE);
+				Toast.makeText(getApplicationContext(),
+				"Group Clicked " + listDataHeader.get(groupPosition),
+				Toast.LENGTH_SHORT).show();
+				return false;
             }
         });
+ */
+        
+        // Listview Group expanded listener
+        expListView.setOnGroupExpandListener(new OnGroupExpandListener() {
  
+            @Override
+            public void onGroupExpand(int groupPosition) {
+              	//ImageView showImg = (ImageView) findViewById(R.id.lot_map);
+            	//showImg.setVisibility(View.VISIBLE);	
+            	//Toast.makeText(getApplicationContext(),
+                        //listDataHeader.get(groupPosition) + " Expanded",
+                        //Toast.LENGTH_SHORT).show();
+            }
+        });
+        
     }
  
  
@@ -118,12 +121,16 @@ public class ViewSpaces extends ListActivity {
          * getting all spaces from get_all_spaces.php url
          * */
         protected String doInBackground(String... args) {
-            // Building Parameters
+        	//Initialization
+        	listDataHeader = new ArrayList<String>();
+            listDataChild = new HashMap<String, List<String>>();
+        	
+        	// Building Parameters
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             // getting JSON string from URL
             JSONObject json = jParser.makeHttpRequest(url_all_spaces, "GET", params);
  
-            // Check your log cat for JSON response
+            // Check log cat for JSON response
             Log.d("All Parking Lots: ", json.toString());
  
             try {
@@ -145,17 +152,12 @@ public class ViewSpaces extends ListActivity {
                         String totalSpace = c.getString(TAG_TOTAL_SPACE);
                         String freeSpace = c.getString(TAG_FREE_SPACE);
                         
-                        // creating new HashMap
-                        HashMap<String, String> map = new HashMap<String, String>();
- 
-                        // adding each child node to HashMap key => value
-                        map.put(TAG_LOTID, id);
-                        map.put(TAG_DESC, desc);
-                        map.put(TAG_TOTAL_SPACE, totalSpace);
-                        map.put(TAG_FREE_SPACE, freeSpace);
- 
-                        // adding HashList to ArrayList
-                        spacesList.add(map);
+                        listDataHeader.add(desc);
+                        List<String> lotInfo = new ArrayList<String>();
+                        //lotInfo.add(freeSpace + "/" + totalSpace);
+                        lotInfo.add(freeSpace + " free spots left.");
+                        listDataChild.put(desc, lotInfo);                      
+                        
                     }
                 } 
             } catch (JSONException e) {
@@ -174,22 +176,13 @@ public class ViewSpaces extends ListActivity {
             // updating UI from Background Thread
             runOnUiThread(new Runnable() {
                 public void run() {
-                    /**
-                     * Updating parsed JSON data into ListView
-                     * */
-                    ListAdapter adapter = new SimpleAdapter(
-                            ViewSpaces.this,
-                            spacesList,
-                            R.layout.list_item, 
-                            new String[] {TAG_LOTID, TAG_DESC, TAG_TOTAL_SPACE, TAG_FREE_SPACE},
-                            new int[] { R.id.lotId, R.id.desc, R.id.total, R.id.free });
-                    // updating listview
-                    setListAdapter(adapter);
+                    // Updating parsed JSON data into ListView                     
+                    listAdapter = new ExpandableListAdapter(ViewSpaces.this, listDataHeader, listDataChild);
                     
-                    
+                    // setting list adapter
+                    expListView.setAdapter(listAdapter);                                      
                 }
-            });
- 
+            });            
         }
  
     	
