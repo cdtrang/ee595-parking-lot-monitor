@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -46,7 +45,7 @@ public class MainActivity extends ActionBarActivity {
 		return true;*/
 		
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.activity_view_lots, menu);
+        inflater.inflate(R.menu.main, menu);
  
         return super.onCreateOptionsMenu(menu);
 	} 

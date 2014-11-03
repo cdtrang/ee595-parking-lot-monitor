@@ -1080,8 +1080,9 @@ containing a value of this type.
         public static final int ablah_library=0x7f020057;
         public static final int ic_action_refresh=0x7f020058;
         public static final int ic_launcher=0x7f020059;
-        public static final int seventeenth_fairmount=0x7f02005a;
-        public static final int twentyfirst_bluff=0x7f02005b;
+        public static final int icon=0x7f02005a;
+        public static final int seventeenth_fairmount=0x7f02005b;
+        public static final int twentyfirst_bluff=0x7f02005c;
     }
     public static final class id {
         public static final int action_bar=0x7f05001c;
