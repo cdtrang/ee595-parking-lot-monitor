@@ -10,7 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
- 
+import android.widget.ImageView;
+
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
  
     private Context _context;
@@ -52,6 +53,24 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 .findViewById(R.id.lblListItem);
  
         txtListChild.setText(childText);
+        
+        //Set lot's map
+        ImageView imageView = (ImageView) convertView.findViewById(R.id.lot_map);
+        switch (groupPosition) {
+        	case 0:
+        		imageView.setImageResource(R.drawable.twentyfirst_bluff);
+        		break;
+        	case 1:
+        		imageView.setImageResource(R.drawable.seventeenth_fairmount);
+        		break;        		
+        	case 2:
+        		imageView.setImageResource(R.drawable.ablah_library);
+        		break;
+        		
+        }
+        
+
+        
         return convertView;
     }
  
