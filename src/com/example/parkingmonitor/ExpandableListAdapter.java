@@ -1,14 +1,20 @@
 package com.example.parkingmonitor;
  
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
  
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ImageView;
 
@@ -65,8 +71,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         		break;        		
         	case 2:
         		imageView.setImageResource(R.drawable.ablah_library);
-        		break;
-        		
+        		break;        		
         }
         
 
@@ -109,7 +114,27 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 .findViewById(R.id.lblListHeader);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
- 
+        
+        //Getting the layout to change the background later
+        LinearLayout li = (LinearLayout) convertView.findViewById(R.id.group_layout);
+
+        //temp String[] for reading values
+        String[] temp = _listDataHeader.toArray(new String[_listDataHeader.size()]);        
+        String[] temp2 = _listDataChild.get( temp[groupPosition] ).toArray((new String[ _listDataChild.get( temp[groupPosition] ).size() ]));
+        
+        float freeSpace = Float.parseFloat(temp2[0].substring(0,3));
+        float totalSpace = Float.parseFloat(temp2[0].substring(4));
+        float ratio = freeSpace / totalSpace;
+
+        //Compare ratio to change the color accordingly 
+        if ( ratio >= .60) {
+        	li.setBackgroundColor(Color.parseColor("#7cbb00"));
+        } else if ( ratio >= .25) {
+        	li.setBackgroundColor(Color.parseColor("#ffa500"));
+        } else {
+        	li.setBackgroundColor(Color.parseColor("#ff1919"));
+        }        
+        
         return convertView;
     }
  
