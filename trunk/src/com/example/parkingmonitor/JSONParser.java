@@ -20,10 +20,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
  
 import android.util.Log;
- 
+import android.view.*; //test commit 
+
 public class JSONParser {
- 
-    static InputStream is = null;
+    
+	static InputStream is = null;
     static JSONObject jObj = null;
     static String json = "";
  
