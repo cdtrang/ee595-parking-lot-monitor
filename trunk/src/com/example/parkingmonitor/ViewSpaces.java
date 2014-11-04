@@ -149,10 +149,14 @@ public class ViewSpaces extends Activity {
                         String totalSpace = c.getString(TAG_TOTAL_SPACE);
                         String freeSpace = c.getString(TAG_FREE_SPACE);
                         
+                        totalSpace = totalSpace.format("%03d", Integer.parseInt(totalSpace));
+                        freeSpace = freeSpace.format("%03d", Integer.parseInt(freeSpace));
+                        //System.out.println(freeSpace + "/" + totalSpace);
+                        
                         listDataHeader.add(desc);
                         List<String> lotInfo = new ArrayList<String>();
-                        //lotInfo.add(freeSpace + "/" + totalSpace);
-                        lotInfo.add(freeSpace + " free spots left.");
+                        lotInfo.add(freeSpace + "/" + totalSpace);
+                        //lotInfo.add(freeSpace);
                         listDataChild.put(desc, lotInfo);                      
                         
                     }

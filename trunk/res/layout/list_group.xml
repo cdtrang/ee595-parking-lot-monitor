@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/group_layout"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    
-    android:background="#262626">
+	>
  
  
     <TextView
@@ -12,8 +12,8 @@
         android:layout_width="fill_parent"
         android:layout_height="65dp"
         android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
-        android:textSize="20sp"
+        android:textSize="22sp"
         android:gravity="center_vertical"
-        android:textColor="#f9f93d" />
+        android:textColor="#ffffff" />
  
 </LinearLayout>
