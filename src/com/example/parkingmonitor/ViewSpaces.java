@@ -17,11 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.app.Activity;
 import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.OnChildClickListener;
-import android.widget.ExpandableListView.OnGroupClickListener;
-import android.widget.ExpandableListView.OnGroupCollapseListener;
 import android.widget.ExpandableListView.OnGroupExpandListener;
-import android.widget.Toast;
 
 public class ViewSpaces extends Activity { 
 
@@ -150,13 +146,14 @@ public class ViewSpaces extends Activity {
                         String desc = c.getString(TAG_DESC);
                         String totalSpace = c.getString(TAG_TOTAL_SPACE);
                         String freeSpace = c.getString(TAG_FREE_SPACE);
-                        
+                                                
                         totalSpace = totalSpace.format("%03d", Integer.parseInt(totalSpace));
                         freeSpace = freeSpace.format("%03d", Integer.parseInt(freeSpace));
                         //System.out.println(freeSpace + "/" + totalSpace);
                         
                         listDataHeader.add(desc);
                         List<String> lotInfo = new ArrayList<String>();
+                        
                         lotInfo.add(freeSpace + "/" + totalSpace);
                         //lotInfo.add(freeSpace);
                         listDataChild.put(desc, lotInfo);                      
