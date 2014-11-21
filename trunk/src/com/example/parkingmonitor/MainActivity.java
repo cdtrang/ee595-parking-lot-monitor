@@ -1,6 +1,5 @@
 package com.example.parkingmonitor;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +18,9 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);	    
 		
+        //Directly start the ViewSpaces activity
+		Intent i = new Intent(getApplicationContext(), ViewSpaces.class);
+        startActivity(i);
 		
 		
 		

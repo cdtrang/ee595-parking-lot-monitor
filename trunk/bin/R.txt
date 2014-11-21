@@ -235,11 +235,12 @@ int drawable abc_textfield_searchview_holo_light 0x7f020054
 int drawable abc_textfield_searchview_right_holo_dark 0x7f020055
 int drawable abc_textfield_searchview_right_holo_light 0x7f020056
 int drawable ablah_library 0x7f020057
-int drawable ic_action_refresh 0x7f020058
-int drawable ic_launcher 0x7f020059
-int drawable icon 0x7f02005a
-int drawable seventeenth_fairmount 0x7f02005b
-int drawable twentyfirst_bluff 0x7f02005c
+int drawable duerksen_center 0x7f020058
+int drawable ic_action_refresh 0x7f020059
+int drawable ic_launcher 0x7f02005a
+int drawable icon 0x7f02005b
+int drawable seventeenth_fairmount 0x7f02005c
+int drawable twentyfirst_bluff 0x7f02005d
 int id action_bar 0x7f05001c
 int id action_bar_activity_content 0x7f050015
 int id action_bar_container 0x7f05001b

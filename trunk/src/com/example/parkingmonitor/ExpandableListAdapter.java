@@ -25,6 +25,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     // child data in format of header title, child title
     private HashMap<String, List<String>> _listDataChild;
  
+    //temp vars for lot's info
+    float freeSpace;
+    float totalSpace;
+    float ratio;
+    
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
             HashMap<String, List<String>> listChildData) {
         this._context = context;
@@ -58,9 +63,18 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView txtListChild = (TextView) convertView
                 .findViewById(R.id.lblListItem);
  
-        txtListChild.setText(childText);
+        //txtListChild.setText(childText);        
+                
+        if (freeSpace >= 25) {
+        	txtListChild.setText((int)(freeSpace) + " available spots in this lot.");
+        	
+        } else if (freeSpace >= 1){
+        	txtListChild.setText("Hurry! Only " + (int)freeSpace + " spots left.");
+        } else {
+        	txtListChild.setText("Full.");
+        }
         
-        //Set lot's map
+        //Set lot's map according to the location
         ImageView imageView = (ImageView) convertView.findViewById(R.id.lot_map);
         switch (groupPosition) {
         	case 0:
@@ -71,7 +85,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         		break;        		
         	case 2:
         		imageView.setImageResource(R.drawable.ablah_library);
-        		break;        		
+        		break;
+        	case 3:
+        		imageView.setImageResource(R.drawable.duerksen_center);
+        		break;    
         }
         
 
@@ -122,9 +139,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         String[] temp = _listDataHeader.toArray(new String[_listDataHeader.size()]);        
         String[] temp2 = _listDataChild.get( temp[groupPosition] ).toArray((new String[ _listDataChild.get( temp[groupPosition] ).size() ]));
         
-        float freeSpace = Float.parseFloat(temp2[0].substring(0,3));
-        float totalSpace = Float.parseFloat(temp2[0].substring(4));
-        float ratio = freeSpace / totalSpace;
+        freeSpace = Float.parseFloat(temp2[0].substring(0,3));
+        totalSpace = Float.parseFloat(temp2[0].substring(4));
+        ratio = freeSpace / totalSpace;
 
         //Compare ratio to change the color accordingly 
         if ( ratio >= .60) {

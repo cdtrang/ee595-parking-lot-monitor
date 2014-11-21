@@ -29,8 +29,10 @@
         <!-- Child of MAIN -->
         <activity
             android:name=".ViewSpaces"            
-            android:label="WSU - Parking Lots" 
-            android:parentActivityName="com.example.parkingmonitor.MainActivity">
+            android:label=" WSU - Parking Lot Monitor"> 
+        <!--
+            android:parentActivityName="com.example.parkingmonitor.MainActivity"> 
+        -->
         </activity>
     </application>
  
